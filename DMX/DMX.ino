@@ -30,10 +30,10 @@ try to use boolean instead of integers
 // Variables for the rotary encoder
 
 struct rotary {
-  int counter = 0; // mode sellect
-  int rState;
-  int rLastState;
-}
+  byte counter = 0; // mode sellect
+  bool rState;
+  bool rLastState;
+}rotary1; 
 // Mode will be the DMX channel of the light
 
 void setup() {
@@ -46,24 +46,27 @@ void setup() {
   Serial.println("Time:     something       ");
   pinMode (outputA,INPUT);
   pinMode (outputB,INPUT);
-  rLastState = digitalRead(outputA);  
+  
+  rotary1.rState = 0;
+  rotary1.rLastState = 0;
+  rotary1.rLastState = digitalRead(outputA);  
 
 }
 
 void loop() {
-  rState = digitalRead(outputA); // Reads the "current" state of the outputA
+  rotary1.rState = digitalRead(outputA); // Reads the "current" state of the outputA
    // If the previous and the current state of the outputA are different, that means a Pulse has occured
-   if (rState != rLastState){     
+   if (rotary1.rState != rotary1.rLastState){     
      // If the outputB state is different to the outputA state, that means the encoder is rotating clockwise
-     if (digitalRead(outputB) != rState) { 
-       counter ++;
+     if (digitalRead(outputB) != rotary1.rState) { 
+       rotary1.counter ++;
      } else {
-       counter --;
+       rotary1.counter --;
      }
      Serial.print("Position: ");
-     Serial.println(counter);
+     Serial.println(rotary1.counter);
    } 
-   rLastState = rState; // Updates the previous state of the outputA with the current state
+   rotary1.rLastState = rotary1.rState; // Updates the previous state of the outputA with the current state
   
 
 
