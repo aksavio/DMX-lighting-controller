@@ -52,7 +52,8 @@ struct rotary {
 
 byte rgbw[4];
 byte value = 0;
-bool rotary_button = 1;
+bool rotary_button;
+unsigned long lastButtonPress = 0;
 
 void rotary_init(){
   pinMode (rotary_F,INPUT);
@@ -82,9 +83,9 @@ void setup() {
   //Version
   Serial.println("DMX ");
   Serial.println("Author:   Akash Savio Sen ");
-  Serial.println("Version:  0.2       Alpha ");
+  Serial.println("Version:  0.3       Alpha ");
   Serial.println("Date:     30.01.23        ");
-  Serial.println("Time:     12:00 +5:30 GMT ");
+  Serial.println("Time:     14:00 +5:30 GMT ");
   
   pinMode(4, INPUT_PULLUP);
   //Display Check
@@ -110,10 +111,15 @@ void loop() {
   if (rotary1.rState != rotary1.rLastState){
     read_rotary();
   }
-  
-  if (rotary_button != digitalRead(4)) {
+  rotary_button = digitalRead(4);
+  if (rotary_button == LOW) {
+    if (millis() - lastButtonPress > 80) {
+        Serial.println("Button pressed!");
+    }
+    lastButtonPress = millis();
     value = value++;
   }
+  delay(1);
   if (value > 3){
     value = 0;
   }
@@ -122,6 +128,7 @@ void loop() {
   Serial.print("Position: ");
   
   Serial.println(rotary1.counter);
+  Serial.println(value);
   rgbw[value] = rotary1.counter;
   display.clearDisplay();
 
