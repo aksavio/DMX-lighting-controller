@@ -51,7 +51,8 @@ struct rotary {
 
 
 byte rgbw[4];
-
+byte value = 0;
+bool rotary_button = 1;
 
 void rotary_init(){
   pinMode (rotary_F,INPUT);
@@ -81,11 +82,11 @@ void setup() {
   //Version
   Serial.println("DMX ");
   Serial.println("Author:   Akash Savio Sen ");
-  Serial.println("Version:  0.1       Alpha ");
-  Serial.println("Date:     11.01.23        ");
-  Serial.println("Time:     something       ");
+  Serial.println("Version:  0.2       Alpha ");
+  Serial.println("Date:     30.01.23        ");
+  Serial.println("Time:     12:00 +5:30 GMT ");
   
-
+  pinMode(4, INPUT_PULLUP);
   //Display Check
   if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
   Serial.println(F("SSD1306 allocation failed"));
@@ -110,20 +111,31 @@ void loop() {
     read_rotary();
   }
   
+  if (rotary_button != digitalRead(4)) {
+    value = value++;
+  }
+  if (value > 3){
+    value = 0;
+  }
+
+ 
   Serial.print("Position: ");
-  rgbw[0] = rotary1.counter;
+  
   Serial.println(rotary1.counter);
+  rgbw[value] = rotary1.counter;
   display.clearDisplay();
+
+
   
   display.setCursor(0,0);
   display.print("Red    ");
   display.println(rgbw[0]);
   display.print("Green  ");
-  display.println(rgbw[0]);
+  display.println(rgbw[1]);
   display.print("Blue   ");
-  display.println(rgbw[0]);
+  display.println(rgbw[2]);
   display.print("White  ");
-  display.println(rgbw[0]);
+  display.println(rgbw[3]);
   
   display.display();
 
